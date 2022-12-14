@@ -1,4 +1,6 @@
 import Puzzle from '../../types/AbstractPuzzle';
+import { createCanvas } from 'canvas';
+import * as fs from 'fs';
 
 enum Item {
   Sand,
@@ -108,6 +110,8 @@ export default class ConcretePuzzle extends Puzzle {
     const map: Item[][] = [];
 
     let lowestPoint = 0;
+    let minX = Infinity;
+    let maxX = 0;
 
     coords.forEach(line => {
       const regexp = /(\d+),(\d+)/g;
@@ -121,6 +125,12 @@ export default class ConcretePuzzle extends Puzzle {
 
         if (y > lowestPoint) {
           lowestPoint = y;
+        }
+        if (x > maxX) {
+          maxX = x;
+        }
+        if (x < minX) {
+          minX = x;
         }
 
         if (previousPoint === undefined) {
@@ -152,7 +162,33 @@ export default class ConcretePuzzle extends Puzzle {
 
     let sandCount = 0;
 
+
+
     while (true) {
+      if (false) {
+        const canvas = createCanvas((maxX - minX) * 4, lowestPoint + 1);
+        const context = canvas.getContext('2d');
+        for (let x = 0; x < (maxX - minX) * 4; x += 1) {
+          if (map[x + minX - 130] === undefined) {
+            map[x + minX - 130] = [];
+          }
+          for (let y = 0; y < lowestPoint + 1; y += 1) {
+            if (map[x + minX - 130][y] === undefined) {
+              context.fillStyle = '#000';
+            }
+            if (map[x + minX - 130][y] === Item.Rock) {
+              context.fillStyle = '#706968';
+            }
+            if (map[x + minX - 130][y] === Item.Sand) {
+              context.fillStyle = '#ebd409';
+            }
+            context.fillRect(x, y, 1, 1);
+          }
+        }
+        const buffer = canvas.toBuffer('image/png');
+        fs.writeFileSync(`images/sand${sandCount}.png`, buffer);
+      }
+
       let sandPositon = [500, 0];
       sandCount += 1;
 
