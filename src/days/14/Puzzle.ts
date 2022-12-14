@@ -166,6 +166,7 @@ export default class ConcretePuzzle extends Puzzle {
 
     while (true) {
       if (false) {
+        // ffmpeg -r 60 -f image2 -s 340x172 -i sand%d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p  -filter:v "setpts=PTS/60" sand.mp4
         const canvas = createCanvas((maxX - minX) * 4, lowestPoint + 1);
         const context = canvas.getContext('2d');
         for (let x = 0; x < (maxX - minX) * 4; x += 1) {
